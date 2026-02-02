@@ -24,3 +24,4 @@ export const saveUserProfile = async (user) => {
     });
   }
 };
+

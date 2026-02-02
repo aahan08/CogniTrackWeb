@@ -4,9 +4,6 @@ import { signOut } from "firebase/auth";
 export default function Dashboard() {
   const user = auth.currentUser;
 
-  const handleLogout = async () => {
-    await signOut(auth);
-  };
 
   return (
     <div style={{ padding: "40px" }}>
@@ -18,9 +15,6 @@ export default function Dashboard() {
           <p>Email: {user.email}</p>
 
           <br />
-          <button onClick={handleLogout}>
-            Logout
-          </button>
         </>
       )}
     </div>
