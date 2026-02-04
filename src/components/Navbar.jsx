@@ -19,13 +19,13 @@ export default function Navbar() {
         borderBottom: "1px solid #ddd",
       }}
     >
-      <h3>CogniTracK</h3>
+      <h3>CogniTrack</h3>
 
       {user && (
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-    <NavLink to="/time-tracker" style={{ marginRight: 12, textDecoration: "none" }}>
-      Time Tracker
-    </NavLink>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <NavLink to="/time-tracker">Time Tracker</NavLink>
+          <NavLink to="/analytics">Analytics</NavLink>
+
           <span>{user.displayName}</span>
           <button onClick={handleLogout}>Logout</button>
         </div>

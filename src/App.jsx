@@ -1,12 +1,13 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./services/firebase";
 import { useEffect, useState } from "react";
-import TimeTracker from "./pages/TimeTracker";
-
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import TimeTracker from "./pages/TimeTracker";
+import Analytics from "./pages/Analytics";
+import Navbar from "./components/Navbar";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -27,6 +28,8 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      {user && <Navbar />}
+
       <Routes>
         {!user ? (
           <Route path="*" element={<Login />} />
@@ -34,14 +37,10 @@ export default function App() {
           <>
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            
-            <Route
-  path="/time-tracker"
-  element={user ? <TimeTracker /> : <Navigate to="/" />}
-/>
-
+            <Route path="/time-tracker" element={<TimeTracker />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </>
-          
         )}
       </Routes>
     </BrowserRouter>

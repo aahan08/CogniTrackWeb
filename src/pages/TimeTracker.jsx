@@ -1,25 +1,42 @@
 import { useState } from "react";
 
+import { useContext } from "react";
+import { TrackerContext } from "../context/TrackerContext";
+
 const HOURS = Array.from({ length: 24 }, (_, i) => `${i}-${i + 1}`);
 
-const CATEGORIES = [
-  "Sleep",
-  "Exercise",
-  "Study",
-  "Leisure",
-  "Projects",
-];
+const CATEGORIES = {
+  Sleep: "#6366F1",
+  Exercise: "#22C55E",
+  Study: "#F59E0B",
+  Leisure: "#EC4899",
+  Projects: "#0EA5E9",
+};
 
-const DATES = ["01/02/26", "02/02/26", "03/02/26"];
+function getWeekDates(startDate) {
+  const monday = new Date(startDate);
+  monday.setDate(monday.getDate() - monday.getDay() + 1);
+
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+}
 
 export default function TimeTracker() {
-  const [data, setData] = useState({});
+  const [weekStart, setWeekStart] = useState(new Date());
+  const { weekData: data, setWeekData: setData } = useContext(TrackerContext);
 
-  const handleChange = (date, hour, value) => {
+
+  const weekDates = getWeekDates(weekStart);
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+  const handleChange = (day, hour, value) => {
     setData((prev) => ({
       ...prev,
-      [date]: {
-        ...(prev[date] || {}),
+      [day]: {
+        ...(prev[day] || {}),
         [hour]: value,
       },
     }));
@@ -27,22 +44,26 @@ export default function TimeTracker() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Time Tracker</h2>
+      <h2>Weekly Time Tracker</h2>
+
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={() => setWeekStart(new Date(weekStart.setDate(weekStart.getDate() - 7)))}>⬅ Prev</button>
+        <button onClick={() => setWeekStart(new Date())} style={{ margin: "0 10px" }}>
+          This Week
+        </button>
+        <button onClick={() => setWeekStart(new Date(weekStart.setDate(weekStart.getDate() + 7)))}>Next ➡</button>
+      </div>
 
       <div style={{ overflowX: "auto" }}>
-        <table
-          style={{
-            borderCollapse: "collapse",
-            width: "100%",
-            minWidth: "700px",
-          }}
-        >
+        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: "900px" }}>
           <thead>
             <tr>
-              <th style={cellStyle}>Hour</th>
-              {DATES.map((date) => (
-                <th key={date} style={cellStyle}>
-                  {date}
+              <th style={cell}>Hour</th>
+              {days.map((day, i) => (
+                <th key={day} style={cell}>
+                  {day}
+                  <br />
+                  {weekDates[i].toLocaleDateString()}
                 </th>
               ))}
             </tr>
@@ -51,41 +72,45 @@ export default function TimeTracker() {
           <tbody>
             {HOURS.map((hour) => (
               <tr key={hour}>
-                <td style={cellStyle}>{hour}</td>
+                <td style={cell}>{hour}</td>
 
-                {DATES.map((date) => (
-                  <td key={date} style={cellStyle}>
-                    <select
-                      style={{ width: "100%", fontSize: "12px" }}
-                      value={data[date]?.[hour] || ""}
-                      onChange={(e) =>
-                        handleChange(date, hour, e.target.value)
-                      }
+                {days.map((day) => {
+                  const value = data[day]?.[hour] || "";
+                  return (
+                    <td
+                      key={day}
+                      style={{
+                        ...cell,
+                        backgroundColor: value ? CATEGORIES[value] : "#fff",
+                      }}
                     >
-                      <option value="">Select</option>
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                ))}
+                      <select
+                        value={value}
+                        onChange={(e) => handleChange(day, hour, e.target.value)}
+                        style={{ width: "100%" }}
+                      >
+                        <option value="">Select</option>
+                        {Object.keys(CATEGORIES).map((cat) => (
+                          <option key={cat} value={cat}>
+                            {cat}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
-      <br />
-      <button>Save</button>
     </div>
   );
 }
 
-const cellStyle = {
+const cell = {
   border: "1px solid #ccc",
   padding: "6px",
   textAlign: "center",
-  fontSize: "13px",
+  fontSize: "12px",
 };
