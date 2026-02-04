@@ -5,12 +5,17 @@ import { saveUserProfile } from "../services/userService";
 import LoginForm from "../components/LoginForm";
 import "../styles/LoginPage.css";
 
+import LoginForm from "../components/LoginForm";
+import "../styles/LoginPage.css";
+
 export default function Login() {
+
 
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       await saveUserProfile(result.user);
+      alert("Google Sign-In Successful");
       alert("Google Sign-In Successful");
     } catch (error) {
       console.error(error);
@@ -32,11 +37,10 @@ export default function Login() {
         <div className="login-right">
           <div className="login-right-content">
             <h4 className="login-right-title">
-              We are more than just a company
+             T̷r̷a̷c̷k̷i̷n̷g̷  Taking Control of Your Life!
             </h4>
             <p className="login-right-text">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Live a healthier, more organized life by effortlessly.
             </p>
           </div>
         </div>
