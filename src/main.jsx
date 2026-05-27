@@ -1,10 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./index.css";
+import { TrackerProvider } from "./context/TrackerContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <TrackerProvider>
+      <App />
+    </TrackerProvider>
   </React.StrictMode>
 );
